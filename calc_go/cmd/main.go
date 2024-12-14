@@ -1,15 +1,16 @@
 package main
 
 import (
-	"github.com/MrM2025/rpforcalc/tree/master/calc_go/pkg/calculation"
 	"fmt"
+
+	"github.com/MrM2025/rpforcalc/tree/master/calc_go/pkg/calculation"
 )
 
 func main() {
+ 
+	var calc calculation.TCalc
 
-	var calc calculation.IHistory
-
-	calc.Init()
+	calc = calc.Init()
 	fmt.Println(calc.Calc("-1+1*2.54+41+((3/3+10)/2-(-2.5-1+(-1))*10)-1"))
 	fmt.Println(calc.Calc("1+1"))
 	fmt.Println(calc.Calc("(2+2)*2"))
