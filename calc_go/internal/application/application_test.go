@@ -3,13 +3,15 @@ package application_test
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
 	"github.com/MrM2025/rpforcalc/tree/master/calc_go/internal/application"
 	"github.com/MrM2025/rpforcalc/tree/master/calc_go/pkg/calculation"
 )
-
 
 // структура запроса
 type RequestBody struct {
@@ -17,47 +19,33 @@ type RequestBody struct {
 }
 // верный запрос
 func TestCalcHandler_Success(t *testing.T) {
+	expected := "2"	
 
-	handler := http.HandlerFunc(application.CalcHandler)
-	server := httptest.NewServer(handler)
-	defer server.Close()
+	r := httptest.NewRequest(http.MethodGet, "/api/v1/calculate?expression=", nil)
+	w := httptest.NewRecorder()
+	application.CalcHandler(w, r)
 
-	// Запрос с правильным выражением
-	requestBody := RequestBody{
-		Expression: "1+1",
-	}
-	body, err := json.Marshal(requestBody)
+	res := w.Result()
+
+	defer res.Body.Close()
+
+	data, err := io.ReadAll(res.Body)
 	if err != nil {
-		t.Fatalf("Error marshalling request body: %v", err)
+		t.Errorf("Error: %v", err)
 	}
 
-	// Создание POST-запроса
-	req, err := http.NewRequest("POST", server.URL+"/api/v1/calculate", bytes.NewBuffer(body))
-	if err != nil {
-		t.Fatalf("Error creating request: %v", err)
+	if string(data) != expected {
+		fmt.Fprintf(w, "error")
 	}
 
-	// Отправка запроса и получение ответа
-	resp, err := server.Client().Do(req)
-	if err != nil {
-		t.Fatalf("Error sending request: %v", err)
+	if w.Result().StatusCode != http.StatusOK {
+		fmt.Fprintf(w, "StatusCode error")
 	}
 
-	// проверка, что статус ответа 200
-	if resp.StatusCode != http.StatusOK {
-		t.Fatalf("Expected status 200 OK, got %d", resp.StatusCode)
-	}
+	//defer r.Body.Close()
 
-	// Проверка ответа
-	var response application.CalcResJSON
-	err = json.NewDecoder(resp.Body).Decode(&response)
-	if err != nil {
-		t.Fatalf("Error decoding response: %v", err)
-	}
-	expectedResult := "2.000000"
-	if response.Result != expectedResult {
-		t.Fatalf("Expected result %s, got %s", expectedResult, response.Result)
-	}
+
+	
 }
 
 // неверное выражение

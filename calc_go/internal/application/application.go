@@ -12,21 +12,9 @@ import (
 
 	"github.com/MrM2025/rpforcalc/tree/master/calc_go/pkg/calculation"
 )
-type CalcReqJSON struct{
-	Expression string `json:"expression"`
-}
-
-type CalcResJSON struct{
-	Result string `json:"result,omitempty"`
-	Error string `json:"error,omitempty"`
-}
 
 type Config struct {
 	Addr string
-}
-
-type Application struct {
-	config *Config
 }
 
 func ConfigFromEnv() *Config {
@@ -38,15 +26,22 @@ func ConfigFromEnv() *Config {
 	return config
 }
 
+type Application struct {
+	config *Config
+}
+
 func New() *Application {
 	return &Application{
 		config: ConfigFromEnv(),
 	}
 }
 
+// Функция запуска приложения
+// тут будем чиать введенную строку и после нажатия ENTER писать результат работы программы на экране
+// если пользователь ввел exit - то останаваливаем приложение
 func (a *Application) Run() error {
 	var (
-		calc calculation .TCalc
+		calc calculation.TCalc
 	)
 	for {
 		// читаем выражение для вычисления из командной строки
@@ -73,11 +68,20 @@ func (a *Application) Run() error {
 	}
 }
 
+type CalcReqJSON struct {
+	Expression string `json:"expression"`
+}
+
+type CalcResJSON struct{
+	Result string `json:"result,omitempty"`
+	Error string `json:"error,omitempty"`
+}
+
 func CalcHandler(w http.ResponseWriter, r *http.Request) {
 	var (
-		calc calculation .TCalc
-		status int 
-		emsg string // error message
+		calc calculation.TCalc
+		status int
+		emsg string
 	)
 
 	request := new(CalcReqJSON)
@@ -87,6 +91,7 @@ func CalcHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+
 
 	result, err := calc.Calc(request.Expression)
 	if err != nil {
@@ -131,11 +136,10 @@ func CalcHandler(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusOK)
 			json.NewEncoder(w).Encode(CalcResJSON{Result: fmt.Sprintf("%f", result)})
 		}
-	
 }
 
 func (a *Application) RunServer() error {
 	http.HandleFunc("/api/v1/calculate", CalcHandler)
-
 	return http.ListenAndServe(":"+a.config.Addr, nil)
 }
+

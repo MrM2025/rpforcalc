@@ -397,12 +397,12 @@ func (s TCalc) Calc(Expression string) (float64, error) {
 
 	resultmap := make(map[string]string)
 
-	/*
+	
 	if s.history == nil {
-		fmt.Println("Please, use TCalc.Init() to make calculation history work")
+		fmt.Println(" ")
 		s.history = make(map[time.Time]map[string]string)
 	}
-	*/
+	
 
 	result, calcerr := tokenizeandCalc(Expression)
 	if result == 0 && calcerr != nil {
