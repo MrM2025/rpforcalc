@@ -46,7 +46,7 @@ func TestCalcHandler_Success(t *testing.T) {
 
 	// проверка, что статус ответа 200
 	if resp.StatusCode != http.StatusOK {
-		t.Fatalf("Expected status 200 OK, got %d", resp.StatusCode)
+		t.Fatalf("Expected status 200 OK, but got %d", resp.StatusCode)
 	}
 
 	// Проверка ответа
@@ -57,7 +57,7 @@ func TestCalcHandler_Success(t *testing.T) {
 	}
 	expectedResult := "2.000000"
 	if response.Result != expectedResult {
-		t.Fatalf("Expected result %s, got %s", expectedResult, response.Result)
+		t.Fatalf("Expected result %s, but got %s", expectedResult, response.Result)
 	}
 }
 
@@ -77,14 +77,12 @@ func TestCalcHandler_InvalidExpression(t *testing.T) {
 		t.Fatalf("Error marshalling request body: %v", err)
 	}
 
-	// Создание POST-запроса
 	req, err := http.NewRequest("POST", server.URL+"/api/v1/calculate", bytes.NewBuffer(body))
 	if err != nil {
 		t.Fatalf("Error creating request: %v", err)
 	}
 	req.Header.Set("Content-Type", "application/json")
 
-	// Отправка запроса и получение ответа
 	resp, err := server.Client().Do(req)
 	if err != nil {
 		t.Fatalf("Error sending request: %v", err)
@@ -93,7 +91,7 @@ func TestCalcHandler_InvalidExpression(t *testing.T) {
 
 	// проверка что статус ответа 422
 	if resp.StatusCode != http.StatusUnprocessableEntity {
-		t.Fatalf("Expected status 422, got %d", resp.StatusCode)
+		t.Fatalf("Expected status 422, but got %d", resp.StatusCode)
 	}
 
 	// проверка ответа
@@ -103,7 +101,7 @@ func TestCalcHandler_InvalidExpression(t *testing.T) {
 		t.Fatalf("Error decoding response: %v", err)
 	}
 	if response.Error != calculation.IncorrectExpressionErr.Error() {
-		t.Fatalf("Expected error %v, got %v", calculation.IncorrectExpressionErr, response.Error)
+		t.Fatalf("Expected error %v, but got %v", calculation.IncorrectExpressionErr, response.Error)
 	}
 }
 
@@ -122,32 +120,29 @@ func TestCalcHandler_EmptyExpression(t *testing.T) {
 		t.Fatalf("Error marshalling request body: %v", err)
 	}
 
-	// Создание POST-запроса
 	req, err := http.NewRequest("POST", server.URL+"/api/v1/calculate", bytes.NewBuffer(body))
 	if err != nil {
 		t.Fatalf("Error creating request: %v", err)
 	}
+
 	req.Header.Set("Content-Type", "application/json")
 
-	// отправка запроса и получение ответа
 	resp, err := server.Client().Do(req)
 	if err != nil {
 		t.Fatalf("Error sending request: %v", err)
 	}
 	defer resp.Body.Close()
 
-	// Проверка, что статус ответа 422
 	if resp.StatusCode != http.StatusUnprocessableEntity {
-		t.Fatalf("Expected status 422, got %d", resp.StatusCode)
+		t.Fatalf("Expected status 422, but got %d", resp.StatusCode)
 	}
 
-	// проверка ответа
 	var response application.CalcResJSON
 	err = json.NewDecoder(resp.Body).Decode(&response)
 	if err != nil {
 		t.Fatalf("Error decoding response: %v", err)
 	}
 	if response.Error != calculation.EmptyExpressionErr.Error() {
-		t.Fatalf("Expected error %v, got %v", calculation.EmptyExpressionErr, response.Error)
+		t.Fatalf("Expected error %v, but got %v", calculation.EmptyExpressionErr, response.Error)
 	}
 }
