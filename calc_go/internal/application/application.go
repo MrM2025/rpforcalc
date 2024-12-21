@@ -2,13 +2,13 @@ package application
 
 import (
 	"bufio"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"strings"
-	"encoding/json"
-	"net/http"
 
 	"github.com/MrM2025/rpforcalc/tree/master/calc_go/pkg/calculation"
 )
@@ -72,7 +72,7 @@ type CalcReqJSON struct {
 	Expression string `json:"expression"`
 }
 
-type CalcResJSON struct{
+type CalcResJSON struct {
 	Result string `json:"result,omitempty"`
 	Error string `json:"error,omitempty"`
 }
@@ -142,4 +142,3 @@ func (a *Application) RunServer() error {
 	http.HandleFunc("/api/v1/calculate", CalcHandler)
 	return http.ListenAndServe(":"+a.config.Addr, nil)
 }
-
