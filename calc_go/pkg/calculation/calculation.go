@@ -268,7 +268,7 @@ func isCorrectExpression(Expression string) (bool, error) { //Проверка �
 			errorstring += fmt.Sprintf("| incorrect symbol, char %d. Allowed only: %s", index, "1234567890.*/+-()")
 		} else if !isNumber(Expression[index]) && isParenthesis(Expression[index]) != isRightParenthesis && index == expressionlength-1 {
 			correctexpression = false
-			errorstring += `| wrong sequence "non-numeric last character"`
+			errorstring += `| wrong sequence "non-numeric last character"` // NonNumlChErr
 		}
 	}
 

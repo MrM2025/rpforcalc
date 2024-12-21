@@ -50,6 +50,12 @@ https://www.postman.com/downloads/
 
 ## Примеры использования
 
+Верно заданный запрос, Status: 200
+
+curl -X POST http://localhost:8080/api/v1/calculate -H "Content-Type: application/json" -d "{\"expression": \"20-(9+1)\"}"
+
+
+
 Запрос с пустым выражением, Status: 422, Error: empty expression
 
 

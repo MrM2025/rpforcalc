@@ -11,4 +11,5 @@ var (
 	NumToPopZeroErr        = errors.New(`numtopop <= 0`)
 	NthToPopErr            = errors.New(`no operator to pop`)
 	DvsByZeroErr           = errors.New(`division by zero`)
+	NonNumlChErr		   = errors.New(`| wrong sequence "non-numeric last character"`)
 )
