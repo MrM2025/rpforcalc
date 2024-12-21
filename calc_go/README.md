@@ -13,6 +13,41 @@
 
 После задайте порт - set "PORT=8087" & "calc.exe" 
 
+## Пример запроса с использованием curl(Рекомендую использовать постман)
+Для cmd :  
+
+ curl -X POST http://localhost:8080/api/v1/calculate -H "Content-Type: application/json" -d "{"expression": "1"}" (пример корректного запроса, код:200)
+
+git bash
+
+curl --location 'localhost:8080/api/v1/calculate'
+--header 'Content-Type: application/json'
+--data '{ "expression": "2+2*2" }'
+
+Postman:
+
+https://identity.getpostman.com/signup?deviceId=c30fc039-7460-4f58-8cb9-b74256c4186c  
+
+^
+
+|
+
+Регестрация
+
+https://www.postman.com/downloads/
+
+^
+
+|
+
+Ссылка на скачивание приложения
+
+Инструкция по эксплуатации №1 - https://timeweb.com/ru/community/articles/kak-polzovatsya-postman
+
+Инструкция по эксплуатации №2 - https://blog.skillfactory.ru/glossary/postman/
+
+Инструкция по эксплуатации №3 - https://sky.pro/media/postman-kak-polzovatsya/
+
 ## Тесты
 Для тестирования перейдите в папку application_test.go и используйте команду go test или(для вывода дополнительной информации) go test -v
 
