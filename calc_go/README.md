@@ -12,11 +12,11 @@
 Если у вас Windows воспользуйтесь этим примером при задании порта - set "PORT=8087" -and (go run ./cmd/main.go)
 
 ## Пример запроса с использованием curl(Рекомендую использовать постман)
-Для cmd :  
+Для cmd:  
 
  curl -X POST http://localhost:8080/api/v1/calculate -H "Content-Type: application/json" -d "{"expression": "1"}" (пример корректного запроса, код:200)
 
-git bash
+Для git bash:
 
 curl --location 'localhost:8080/api/v1/calculate'
 --header 'Content-Type: application/json'
