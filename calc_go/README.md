@@ -39,7 +39,7 @@ https://www.postman.com/downloads/
 
 |
 
-Ссылка на скачивание приложения
+Ссылка на скачивание приложения    
 
 #
 Инструкция по эксплуатации №1 - https://timeweb.com/ru/community/articles/kak-polzovatsya-postman
@@ -48,10 +48,30 @@ https://www.postman.com/downloads/
 
 Инструкция по эксплуатации №3 - https://gb.ru/blog/kak-testirovat-api-postman/
 
+## Примеры использования
+
+Запрос с пустым выражением, Status: 422, Error: empty expression
+
+
+curl -X POST http://localhost:8080/api/v1/calculate -H "Content-Type: application/json" -d "{\"expression": \"\"}"
+
+
+
+Запрос с делением на 0, Status: 422, Error: division by zero
+
+
+curl -X POST http://localhost:8080/api/v1/calculate -H "Content-Type: application/json" -d "{\"expression": \"1/0\"}"
+
+
+
+Запрос неверным выражением, Status : 422, Error: invalid expression
+
+
+curl -X POST http://localhost:8080/api/v1/calculate -H "Content-Type: application/json" -d "{\"expression\": \"1++*2\"}"
+
 
 ## Тесты
 Для тестирования перейдите в папку application_test.go и используйте команду go test или(для вывода дополнительной информации) go test -v
 
-Для запусков всех тестом разом воспользуйтесь - go test ./...
+Для запусков всех тестов разом воспользуйтесь - go test ./...
 
-Для запусков всех тестом разом воспользуйтесь - go test ./...
