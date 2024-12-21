@@ -23,6 +23,7 @@ git bash
 curl --location 'localhost:8080/api/v1/calculate'
 --header 'Content-Type: application/json'
 --data '{ "expression": "2+2*2" }'
+#
 
 Postman:
 
@@ -42,6 +43,7 @@ https://www.postman.com/downloads/
 
 Ссылка на скачивание приложения
 
+#
 Инструкция по эксплуатации №1 - https://timeweb.com/ru/community/articles/kak-polzovatsya-postman
 
 Инструкция по эксплуатации №2 - https://blog.skillfactory.ru/glossary/postman/
