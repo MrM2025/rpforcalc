@@ -46,7 +46,8 @@ https://www.postman.com/downloads/
 
 Инструкция по эксплуатации №2 - https://blog.skillfactory.ru/glossary/postman/
 
-Инструкция по эксплуатации №3 - https://sky.pro/media/postman-kak-polzovatsya/
+Инструкция по эксплуатации №3 - https://gb.ru/blog/kak-testirovat-api-postman/
+
 
 ## Тесты
 Для тестирования перейдите в папку application_test.go и используйте команду go test или(для вывода дополнительной информации) go test -v
