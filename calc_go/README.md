@@ -15,16 +15,16 @@
 
 Выражение для вычисления должно передаваться в JSON-формате, в единственном поле "expression", если поле отсутствует - сервер вернет ошибку 422, "Empty expression"; если в запросе будут поля, отличные от "expression" - сервер вернет ошибку 400, "Bad request" также как и при отсуствии JSON'а в теле запроса;
 
-## Пример запроса с использованием curl(Рекомендую использовать постман)
-Для cmd:  
+Должны быть установлены Go и Git
 
- curl -X POST http://localhost:8080/api/v1/calculate -H "Content-Type: application/json" -d "{"expression": "1"}" (пример корректного запроса, код:200)
+## Пример запроса с использованием curl(Рекомендую использовать постман)
+Для cmd windows:  
+
+ curl -i -X POST -H "Content-Type:application/json" -d "{\"expression\": \"-1+1*2.54+41+((3/3+10)/2-(-2.5-1+(-1))*10)-1\" }" http://localhost:8080/api/v1/calculate (пример корректного запроса, код:200)
 
 Для git bash:
 
-curl --location 'localhost:8080/api/v1/calculate'
---header 'Content-Type: application/json'
---data '{ "expression": "-1+1*2.54+41+((3/3+10)/2-(-2.5-1+(-1))*10)-1" }'
+curl --location 'localhost:8080/api/v1/calculate' --header 'Content-Type: application/json' --data '{ "expression": "-1+1*2.54+41+((3/3+10)/2-(-2.5-1+(-1))*10)-1" }'
 #
 
 Postman:
@@ -35,7 +35,7 @@ https://identity.getpostman.com/signup?deviceId=c30fc039-7460-4f58-8cb9-b74256c4
 
 |
 
-Регестрация
+Регистрация
 
 https://www.postman.com/downloads/
 
