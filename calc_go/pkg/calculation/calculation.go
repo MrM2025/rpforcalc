@@ -1,7 +1,6 @@
 package calculation
 
 import (
-	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -202,7 +201,10 @@ func isCorrectExpression(Expression string) (bool, error) { //Проверка �
 		return false, EmptyExpressionErr //Пустое выражение
 	}
 
-	IncorrectExpressionErr = errors.New(`incorrect expression`)
+	if IncorrectExpressionErr.Error() != "incorrect expression" {
+		IncorrectExpressionErr = fmt.Errorf(`incorrect expression`)
+	}
+
 	correctexpression := true
 	expressionlength := len(Expression)
 	countleftparenthesis := 0
@@ -234,6 +236,9 @@ func isCorrectExpression(Expression string) (bool, error) { //Проверка �
 			case isSeparator(Expression[index+1]) != 0 && isOperator(Expression[index]) != 0: //Запрещенная последовательность "оператор->разделитель дроби"
 				correctexpression = false
 				errorstring += fmt.Sprintf(`| wrong sequence "operation sign->separator": chars %d, %d `, index, index+1)
+			case isParenthesis(Expression[index]) == isRightParenthesis && isOperator(Expression[index+1]) == 0 && isParenthesis(Expression[index+1]) != isRightParenthesis:
+				correctexpression = false
+				errorstring += fmt.Sprintf(`| wrong sequence "right parenthesys -> non operation sign or non right parenthesys character": chars %d, %d `, index, index+1)
 			case isSeparator(Expression[index]) != 0 && isNumber(Expression[index+1]) && isNumber(Expression[index-1]): //Запрещенная последовательность "множественные разделители дроби в числе"
 				for nextcharindex := index + 1; nextcharindex < expressionlength; nextcharindex++ {
 					if !isNumber(Expression[nextcharindex]) {

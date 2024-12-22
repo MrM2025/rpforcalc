@@ -84,10 +84,23 @@ func CalcHandler(w http.ResponseWriter, r *http.Request) {
 		emsg   string
 	)
 
+	defer func() {
+		if r := recover(); r != nil {
+			status = http.StatusInternalServerError
+			emsg = "unknown error"
+			w.WriteHeader(status)
+			json.NewEncoder(w).Encode(CalcResJSON{Error: emsg})
+			return
+		}
+	}()
+
 	request := new(CalcReqJSON)
 	defer r.Body.Close()
 
-	err := json.NewDecoder(r.Body).Decode(&request)
+	dec := json.NewDecoder(r.Body)
+	dec.DisallowUnknownFields()
+	err := dec.Decode(&request)
+
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -96,7 +109,6 @@ func CalcHandler(w http.ResponseWriter, r *http.Request) {
 	result, err := calc.Calc(request.Expression)
 
 	if err != nil { // Присваиваем ошибке статус-код, выводим их
-		emsg = ""
 		switch {
 		case errors.Is(err, calculation.EmptyExpressionErr):
 			status = http.StatusUnprocessableEntity
@@ -126,12 +138,6 @@ func CalcHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(status)
 		json.NewEncoder(w).Encode(CalcResJSON{Error: emsg})
 
-	} else if err := recover(); err != nil {
-		log.Printf("Panic: %v", err)
-		status = http.StatusInternalServerError
-		emsg = "unknown error"
-		w.WriteHeader(status)
-		json.NewEncoder(w).Encode(CalcResJSON{Error: emsg})
 	} else {
 		log.Printf("Successful calculation: %s = %f", request.Expression, result)
 		w.WriteHeader(http.StatusOK)

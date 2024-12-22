@@ -16,6 +16,11 @@ type RequestBody struct {
 	Expression string `json:"expression"`
 }
 
+type WrongRequestBody struct {
+	Expression         string `json:"expression"`
+	UnpredictableField string `json:"unpredictablefield"`
+}
+
 // верный запрос
 func TestCalcHandler_Success(t *testing.T) {
 
@@ -144,5 +149,60 @@ func TestCalcHandler_EmptyExpression(t *testing.T) {
 	}
 	if response.Error != calculation.EmptyExpressionErr.Error() {
 		t.Fatalf("Expected error %v, but got %v", calculation.EmptyExpressionErr, response.Error)
+	}
+}
+
+func TestHandler_WithoutJSON(t *testing.T) {
+
+	handler := http.HandlerFunc(application.CalcHandler)
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	requestBody := ""
+
+	req, err := http.NewRequest("POST", server.URL+"/api/v1/calculate", bytes.NewBuffer([]byte(requestBody)))
+	if err != nil {
+		t.Fatalf("Error creating request: %v", err)
+	}
+
+	resp, err := server.Client().Do(req)
+	if err != nil {
+		t.Fatalf("Error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusBadRequest {
+		t.Fatalf("Expected status 400, but got %d", resp.StatusCode)
+	}
+}
+
+func TestHandler_IncorrectJSON(t *testing.T) {
+
+	handler := http.HandlerFunc(application.CalcHandler)
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	requestBody := WrongRequestBody{
+		Expression:         "123",
+		UnpredictableField: "12",
+	}
+	body, err := json.Marshal(requestBody)
+	if err != nil {
+		t.Fatalf("Error marshalling request body: %v", err)
+	}
+
+	req, err := http.NewRequest("POST", server.URL+"/api/v1/calculate", bytes.NewBuffer(body))
+	if err != nil {
+		t.Fatalf("Error creating request: %v", err)
+	}
+
+	resp, err := server.Client().Do(req)
+	if err != nil {
+		t.Fatalf("Error sending request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusBadRequest {
+		t.Fatalf("Expected status 400, but got %d", resp.StatusCode)
 	}
 }
