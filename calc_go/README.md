@@ -52,33 +52,23 @@ https://www.postman.com/downloads/
 
 Инструкция по эксплуатации №3 - https://gb.ru/blog/kak-testirovat-api-postman/
 
-## Примеры использования
+## Примеры использования (cmd Windows)
 
 Верно заданный запрос, Status: 200
 
-curl -X POST http://localhost:8080/api/v1/calculate -H "Content-Type: application/json" -d "{\"expression": \"20-(9+1)\"}"
-
-
+curl -i -X POST -H "Content-Type:application/json" -d "{\"expression\": \"20-(9+1)\"}" http://localhost:8080/api/v1/calculate
 
 Запрос с пустым выражением, Status: 422, Error: empty expression
 
-
-curl -X POST http://localhost:8080/api/v1/calculate -H "Content-Type: application/json" -d "{\"expression": \"\"}"
-
-
+curl -i -X POST -H "Content-Type:application/json" -d "{\"expression\": \"\"}" http://localhost:8080/api/v1/calculate
 
 Запрос с делением на 0, Status: 422, Error: division by zero
 
-
-curl -X POST http://localhost:8080/api/v1/calculate -H "Content-Type: application/json" -d "{\"expression": \"1/0\"}"
-
-
+curl -i -X POST -H "Content-Type:application/json" -d "{\"expression\": \"1/0\"}" http://localhost:8080/api/v1/calculate
 
 Запрос неверным выражением, Status : 422, Error: invalid expression
 
-
-curl -X POST http://localhost:8080/api/v1/calculate -H "Content-Type: application/json" -d "{\"expression\": \"1++*2\"}"
-
+curl -i -X POST -H "Content-Type:application/json" -d "{\"expression\": \"1++*2\"}" http://localhost:8080/api/v1/calculate
 
 ## Тесты
 Для тестирования перейдите в папку application_test.go и используйте команду go test или(для вывода дополнительной информации) go test -v
