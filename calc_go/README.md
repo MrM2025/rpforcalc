@@ -46,11 +46,11 @@ https://www.postman.com/downloads/
 Ссылка на скачивание приложения    
 
 #
-Инструкция по эксплуатации №1 - https://timeweb.com/ru/community/articles/kak-polzovatsya-postman
+Мануал №1 - https://timeweb.com/ru/community/articles/kak-polzovatsya-postman
 
-Инструкция по эксплуатации №2 - https://blog.skillfactory.ru/glossary/postman/
+Мануал №2 - https://blog.skillfactory.ru/glossary/postman/
 
-Инструкция по эксплуатации №3 - https://gb.ru/blog/kak-testirovat-api-postman/
+Мануал №3 - https://gb.ru/blog/kak-testirovat-api-postman/
 
 ## Примеры использования (cmd Windows)
 
