@@ -1,7 +1,7 @@
 package calculation
 
 import (
-	//"errors"
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -198,10 +198,11 @@ func isCorrectExpression(Expression string) (bool, error) { //Проверка �
 
 	var errorstring string
 
-	Expression = strings.Replace(Expression, " ", "", -1)
 	if Expression == "" {
 		return false, EmptyExpressionErr //Пустое выражение
 	}
+
+	IncorrectExpressionErr = errors.New(`incorrect expression`)
 	correctexpression := true
 	expressionlength := len(Expression)
 	countleftparenthesis := 0
@@ -268,7 +269,10 @@ func isCorrectExpression(Expression string) (bool, error) { //Проверка �
 			errorstring += fmt.Sprintf("| incorrect symbol, char %d. Allowed only: %s", index, "1234567890.*/+-()")
 		} else if !isNumber(Expression[index]) && isParenthesis(Expression[index]) != isRightParenthesis && index == expressionlength-1 {
 			correctexpression = false
-			errorstring += `| wrong sequence "non-numeric last character"` // NonNumlChErr
+			errorstring += `| wrong sequence "non-numeric last character"`
+		} else if !isNumber(Expression[index]) && isParenthesis(Expression[index]) == isRightParenthesis && index == expressionlength-1 && countleftparenthesis != countrightparenthesis {
+			correctexpression = false
+			errorstring += `| wrong sequence "non-numeric last character"`
 		}
 	}
 
@@ -280,7 +284,7 @@ func isCorrectExpression(Expression string) (bool, error) { //Проверка �
 		errorstring += `| wrong sequence "insufficient number of right parentheses"`
 	}
 
-	if !correctexpression {  //Некорректное выражение
+	if !correctexpression { //Некорректное выражение
 		IncorrectExpressionErr = fmt.Errorf("%s %s", IncorrectExpressionErr, errorstring)
 		return false, IncorrectExpressionErr
 	}
@@ -293,6 +297,8 @@ func tokenizeandCalc(Expression string) (float64, error) {
 	var numsslice []float64
 	var priority, countdown int
 	var matherr, numconverr error
+
+	Expression = strings.ReplaceAll(Expression, " ", "")
 
 	check, checkerr := isCorrectExpression(Expression)
 	if !check && checkerr != nil {
@@ -397,12 +403,10 @@ func (s TCalc) Calc(Expression string) (float64, error) {
 
 	resultmap := make(map[string]string)
 
-	
 	if s.history == nil {
 		fmt.Println(" ")
 		s.history = make(map[time.Time]map[string]string)
 	}
-	
 
 	result, calcerr := tokenizeandCalc(Expression)
 	if result == 0 && calcerr != nil {

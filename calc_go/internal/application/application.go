@@ -74,29 +74,30 @@ type CalcReqJSON struct {
 
 type CalcResJSON struct {
 	Result string `json:"result,omitempty"`
-	Error string `json:"error,omitempty"`
+	Error  string `json:"error,omitempty"`
 }
 
 func CalcHandler(w http.ResponseWriter, r *http.Request) {
 	var (
-		calc calculation.TCalc
+		calc   calculation.TCalc
 		status int
-		emsg string
+		emsg   string
 	)
 
 	request := new(CalcReqJSON)
 	defer r.Body.Close()
+
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-
 	result, err := calc.Calc(request.Expression)
-	if err != nil {
 
-		switch {	
+	if err != nil { // Присваиваем ошибке статус-код, выводим их
+		emsg = ""
+		switch {
 		case errors.Is(err, calculation.EmptyExpressionErr):
 			status = http.StatusUnprocessableEntity
 			emsg = calculation.EmptyExpressionErr.Error()
@@ -104,7 +105,7 @@ func CalcHandler(w http.ResponseWriter, r *http.Request) {
 		case errors.Is(err, calculation.IncorrectExpressionErr):
 			status = http.StatusUnprocessableEntity
 			emsg = calculation.IncorrectExpressionErr.Error()
- 
+
 		case errors.Is(err, calculation.NumToPopMErr): // numtopop > nums' slise length
 			status = http.StatusUnprocessableEntity
 			emsg = calculation.NumToPopMErr.Error()
@@ -132,13 +133,18 @@ func CalcHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(status)
 		json.NewEncoder(w).Encode(CalcResJSON{Error: emsg})
 	} else {
-			log.Printf("Successful calculation: %s = %f", request.Expression, result)
-			w.WriteHeader(http.StatusOK)
-			json.NewEncoder(w).Encode(CalcResJSON{Result: fmt.Sprintf("%f", result)})
-		}
+		log.Printf("Successful calculation: %s = %f", request.Expression, result)
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(CalcResJSON{Result: fmt.Sprintf("%f", result)})
+	}
 }
 
 func (a *Application) RunServer() error {
-	http.HandleFunc("/api/v1/calculate", CalcHandler)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "..\\README.md")
+	})
+	mux.HandleFunc("/api/v1/calculate", CalcHandler)
+	http.Handle("/", mux)
 	return http.ListenAndServe(":"+a.config.Addr, nil)
 }
