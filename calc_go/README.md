@@ -4,15 +4,6 @@
 
 
 
-## Контактная информация
-Telegram:
-
-@MirMan1299
-
-Если будут вопросы - пишите.
-#
-
-
 ## Запуск 
 С помощью git clone github.com/MrM2025/rpforcalc/tree/master/calc_go сделайте клон проекта. 
 
